@@ -4,7 +4,7 @@
  * This starter uses JSONP so it can communicate with Apps Script from GitHub Pages
  * without a CORS preflight. Keep bulk submissions reasonably small.
  */
-const API_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+const API_URL = "https://script.google.com/macros/s/AKfycby5HvvQ3RDv2iJ5qFl_j8k9KVV20rqN16U1fovZ8zjAxpq0Cd6nlSKjrjN7Zkh5e7lG/exec";
 
 const state = { people: [], attendance: {}, report: null, reportRows: [], busy: false };
 const $ = (id) => document.getElementById(id);
