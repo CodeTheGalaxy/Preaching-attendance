@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#10243a">
+  <title>Attendance Portal</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">A</div>
+      <div><strong>Attendance Portal</strong><small>People · Attendance · Reports</small></div>
+    </div>
+    <div class="header-actions">
+      <span id="connectionStatus" class="status-pill status-offline">Not connected</span>
+      <button id="refreshBtn" class="button button-ghost" type="button">Refresh</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="welcome">
+      <div>
+        <p class="eyebrow">ATTENDANCE MANAGEMENT</p>
+        <h1>Good day.</h1>
+        <p class="muted">Add people, update attendance in bulk, and review attendance reports.</p>
+      </div>
+      <div class="date-card"><span>Today</span><strong id="todayLabel">—</strong></div>
+    </section>
+
+    <section class="stats-grid" aria-label="Attendance summary">
+      <article class="stat-card"><span>Total people</span><strong id="totalPeople">—</strong><small>Active people</small></article>
+      <article class="stat-card"><span>Present today</span><strong id="presentToday">—</strong><small>Marked present</small></article>
+      <article class="stat-card"><span>Absent today</span><strong id="absentToday">—</strong><small>Marked absent</small></article>
+      <article class="stat-card"><span>Not marked</span><strong id="notMarkedToday">—</strong><small>Awaiting attendance</small></article>
+    </section>
+
+    <nav class="tabs" aria-label="Portal sections">
+      <button class="tab active" data-tab="attendance" type="button">Attendance</button>
+      <button class="tab" data-tab="people" type="button">People</button>
+      <button class="tab" data-tab="reports" type="button">Reports</button>
+    </nav>
+
+    <section id="attendancePanel" class="panel tab-panel">
+      <div class="section-heading">
+        <div><p class="eyebrow">UPDATE</p><h2>Mark attendance</h2><p class="muted">Choose a date, set each person's status, then save all changes together.</p></div>
+        <button id="loadAttendanceBtn" class="button button-secondary" type="button">Load date</button>
+      </div>
+      <div class="toolbar">
+        <label class="field compact-field">Attendance date<input id="attendanceDate" type="date"></label>
+        <label class="field search-field">Search people<input id="attendanceSearch" type="search" placeholder="Search by name or ID"></label>
+        <div class="bulk-actions">
+          <button id="allPresentBtn" class="button button-small button-ghost" type="button">All present</button>
+          <button id="allAbsentBtn" class="button button-small button-ghost" type="button">All absent</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Person</th><th>Person ID</th><th>Attendance status</th></tr></thead>
+          <tbody id="attendanceRows"><tr><td colspan="3" class="empty-state">Connect the portal to your Google Sheet to load people.</td></tr></tbody>
+        </table>
+      </div>
+      <div class="form-footer"><span id="attendanceCount" class="muted">0 people</span><button id="saveAttendanceBtn" class="button button-primary" type="button">Save attendance</button></div>
+    </section>
+
+    <section id="peoplePanel" class="panel tab-panel hidden">
+      <div class="section-heading">
+        <div><p class="eyebrow">ADD</p><h2>People directory</h2><p class="muted">Register a new person or edit an existing person's name.</p></div>
+      </div>
+      <div class="split-layout">
+        <form id="personForm" class="subpanel">
+          <h3 id="personFormTitle">Add a person</h3>
+          <input id="editingPersonId" type="hidden">
+          <label class="field">Person ID<input id="personId" type="text" placeholder="e.g. P001" required maxlength="40"></label>
+          <label class="field">Full name<input id="personName" type="text" placeholder="Enter full name" required maxlength="120"></label>
+          <div class="inline-actions"><button id="savePersonBtn" class="button button-primary" type="submit">Add person</button><button id="cancelEditBtn" class="button button-ghost hidden" type="button">Cancel edit</button></div>
+          <p class="hint">Person IDs must be unique. Use a consistent ID for each person.</p>
+        </form>
+        <div class="subpanel">
+          <div class="list-heading"><h3>Registered people</h3><input id="peopleSearch" type="search" placeholder="Search people"></div>
+          <div class="table-wrap compact-table"><table><thead><tr><th>Name</th><th>ID</th><th>Action</th></tr></thead><tbody id="peopleRows"><tr><td colspan="3" class="empty-state">No people loaded yet.</td></tr></tbody></table></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="reportsPanel" class="panel tab-panel hidden">
+      <div class="section-heading"><div><p class="eyebrow">INSIGHTS</p><h2>Attendance reports</h2><p class="muted">Review attendance between two dates and export the results as CSV for Excel.</p></div></div>
+      <div class="toolbar report-toolbar">
+        <label class="field compact-field">From<input id="reportFrom" type="date"></label>
+        <label class="field compact-field">To<input id="reportTo" type="date"></label>
+        <button id="runReportBtn" class="button button-primary" type="button">Generate report</button>
+        <button id="exportReportBtn" class="button button-secondary" type="button" disabled>Export CSV</button>
+      </div>
+      <div id="reportSummary" class="report-summary muted">Choose a date range and generate a report.</div>
+      <div class="table-wrap"><table><thead><tr><th>Person</th><th>ID</th><th>Present</th><th>Absent</th><th>Marked days</th><th>Attendance %</th></tr></thead><tbody id="reportRows"><tr><td colspan="6" class="empty-state">No report generated.</td></tr></tbody></table></div>
+      <p class="hint">Attendance percentage = Present ÷ (Present + Absent). Dates with no entry are not counted as marked days.</p>
+    </section>
+
+    <footer class="footer"><span>Attendance Portal</span><span>Data is stored in your Google Sheet.</span></footer>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
